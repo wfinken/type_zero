@@ -69,9 +69,3 @@ The project uses the "Workers Sites" pattern (KV-backed static site hosting) rat
 6.  Click **Save and Deploy**.
 
 Cloudflare will automatically build the React app and deploy the worker on every push to the main branch.
-
-### Custom Domain
-The project includes configuration for the custom domain:
--   `typezero.williamfinken.com`
-
-Ensure this domain is active in your Cloudflare account for the routing to works automatically.
