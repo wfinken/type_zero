@@ -167,6 +167,12 @@ function App() {
     if (processedEnemiesRef.current.has(enemy.id)) return
     processedEnemiesRef.current.add(enemy.id)
 
+    // Reset boss wave if boss reaches bottom
+    if (enemy.isBoss) {
+      setIsBossWave(false)
+      isBossWaveRef.current = false
+    }
+
     // Special words (bonuses) don't cause damage or break streak if missed
     if (enemy.type !== 'normal') {
       setEnemies(prev => prev.filter(e => e.id !== enemy.id))
@@ -242,6 +248,7 @@ function App() {
       spawnEnemy(false)
       spawnTimerRef.current = 0
       nextSpawnInterval.current = currentBaseInterval + Math.random() * SPAWN_INTERVAL_VARIANCE
+      // Ensure specific delays or waves could be handled here
     }
 
     // Boss wave trigger
@@ -326,8 +333,16 @@ function App() {
       }
     }
 
+    // HELPER: Sort enemies by Y position (descending) to prioritize closest to bottom
+    const getPrioritizedMatch = (candidates) => {
+      if (!candidates || candidates.length === 0) return undefined
+      return candidates.sort((a, b) => b.y - a.y)[0]
+    }
+
     // Check for exact match first
-    const exactMatch = enemies.find(e => e.word.toLowerCase() === lowerValue)
+    const exactMatches = enemies.filter(e => e.word.toLowerCase() === lowerValue)
+    const exactMatch = getPrioritizedMatch(exactMatches)
+    
     if (exactMatch) {
       // Calculate duration
       if (wordStartTimeRef.current) {
@@ -436,7 +451,8 @@ function App() {
     }
 
     // Find prefix match
-    const prefixMatch = enemies.find(e => e.word.toLowerCase().startsWith(lowerValue))
+    const prefixMatches = enemies.filter(e => e.word.toLowerCase().startsWith(lowerValue))
+    const prefixMatch = getPrioritizedMatch(prefixMatches)
     setMatchedEnemy(prefixMatch || null)
   }, [input, enemies, streak])
 
