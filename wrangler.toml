@@ -1,0 +1,13 @@
+name = "type-zero"
+main = "workers-site/index.js"
+compatibility_date = "2024-01-01"
+
+[site]
+bucket = "./dist"
+
+[build]
+command = "npm run build"
+
+[[routes]]
+pattern = "typezero.williamfinken.com"
+custom_domain = true
